@@ -44,7 +44,7 @@ if(BUILD_TESTS)
     set(TEST_NAME BlackjackTsts)
     
     add_executable(${TEST_NAME}
-        # Add test source files here
+        tests/test_deck.cpp
     )
     
     target_include_directories(${TEST_NAME} PRIVATE 

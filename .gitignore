@@ -1,0 +1,7 @@
+.vscode/*
+bin/*
+build/*
+compile_commands.json
+.clangd
+.cache/
+.claude/

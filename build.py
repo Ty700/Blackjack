@@ -112,8 +112,8 @@ def main():
             run("debug")
 #        elif(sys.argv[1] == "-s"):
 #            make_and_run_server()
-#        elif(sys.argv[1] == "-t"):
-#            make_tests()
+        elif(sys.argv[1] == "-t"):
+            make_tests()
         else:
             print_help_menu()
 

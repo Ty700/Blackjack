@@ -1,10 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <stdint.h>
 #include <vector>
 #include <stack>
-#include <stdexcept>
 
 class Deck {
     private:

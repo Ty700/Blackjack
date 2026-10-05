@@ -1,0 +1,17 @@
+/* cli: terminal version of the game. Runnable app that uses core. */
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation(project(':core'))
+}
+
+application {
+    mainClass = 'tech.ty700.blackjack.cli.Main'
+}
+
+/* Lets Scanner read keyboard input when using ./gradlew :cli:run */
+run {
+    standardInput = System.in
+}

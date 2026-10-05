@@ -1,0 +1,7 @@
+rootProject.name = 'Blackjack'
+
+/**
+ * Core => Core BJJ rules
+ * CLI  => Command Line version of BJJ
+ * */
+include('core', 'cli')

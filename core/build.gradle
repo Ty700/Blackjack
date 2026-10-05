@@ -1,0 +1,4 @@
+/* core: blackjack rules as a library. No UI code here. */
+plugins {
+    id 'java-library'
+}

@@ -5,6 +5,6 @@ public class Main{
     Player Tyler = new Player("Tyler");
     void main()
     {
-        IO.println(Tyler.name);
+        IO.println();
     }
 }

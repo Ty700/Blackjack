@@ -97,13 +97,15 @@ public class Hand
         this.handState = HandState.DONE;
     }
 
-    public void doubleHand(Card c)
+    public void doubleHand(final Card c, final long anAdditionalBet)
     {
         if (this.hand.size() != 2 || this.handState != HandState.IN_PROGRESS) {
             throw new IllegalStateException("Can only double on first two cards of an in-progress hand.");
         }
 
-        this.betToHand *= 2;
+        /* Ownus is on the game to pass bet amount... */
+        /* Most time this is just *2 of bet.. but perhaps there are power ups that allow for different amounts */
+        this.betToHand += anAdditionalBet;
         addCard(c);
         this.handState = HandState.DONE;
     }

@@ -7,7 +7,7 @@ package tech.ty700.blackjack.core;
 public abstract class Participant {
     public String name;
     public long networth;
-
+    private Hand hand;
     Participant(final String aName)
     {
         /* Name: Captured by game menu */
@@ -16,4 +16,10 @@ public abstract class Participant {
     };
 
     public abstract int hit();
+
+    public void stand()
+    {
+
+    }
+
 }

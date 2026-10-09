@@ -16,6 +16,7 @@ public enum Suit {
     }
 
     public String getSymbol() { return this.symbol; }
+    /* Don't need this... yet, easy way to see if all suits in hand are the same though */
     public int getValue() { return this.value; }
 
 }

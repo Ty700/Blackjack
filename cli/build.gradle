@@ -9,6 +9,14 @@ dependencies {
 
 application {
     mainClass = 'tech.ty700.blackjack.cli.Main'
+    applicationName = 'blackjack'
+}
+
+/* Release archives: blackjack-cli-<version>.zip and .tar */
+distributions {
+    main {
+        distributionBaseName = 'blackjack-cli'
+    }
 }
 
 /* Lets Scanner read keyboard input when using ./gradlew :cli:run */

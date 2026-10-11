@@ -99,7 +99,7 @@ public class PlayerStats
                 this.handsWon++;
                 if (doubled) this.doublesWon++;
                 this.currentWinStreak++;
-                this.longestWinStreak = Math.max(this.longestWinStreak, this.currentWinStreak); everything
+                this.longestWinStreak = Math.max(this.longestWinStreak, this.currentWinStreak);
             }
             case LOST, BUSTED ->
             {

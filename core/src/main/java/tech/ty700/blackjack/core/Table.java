@@ -11,6 +11,8 @@ import java.util.UUID;
  * Not thread-safe on purpose. The server runs each table on one thread.
  */
 public class Table {
+    public static final int MAX_SEATS = Seating.MAX_SEATS;
+
     private final UUID id = UUID.randomUUID();
     private final Dealer dealer;
     private final Deck deck;

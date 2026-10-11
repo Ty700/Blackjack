@@ -17,7 +17,7 @@ import java.util.SortedMap;
  */
 class TableScreen
 {
-    private static final int SEATS = 7;
+    private static final int SEATS = Table.MAX_SEATS;
     private static final int COLUMN_WIDTH = 16;
     private static final int CARDS_PER_ROW = 3;
     private static final int WIDTH = SEATS * COLUMN_WIDTH + (SEATS - 1);
@@ -109,7 +109,7 @@ class TableScreen
         String name = player == null ? "Seat " + (seat + 1) : player.getName().toUpperCase();
         if (myTurn) name = "> " + name + " <";
         column.add(center(name, COLUMN_WIDTH));
-        column.add(center(isMe ? "(you)" : "", COLUMN_WIDTH));
+        column.add(center(player == null ? "" : isMe ? "(you)" : "(bot)", COLUMN_WIDTH));
 
         /* Nobody here */
         if (player == null)

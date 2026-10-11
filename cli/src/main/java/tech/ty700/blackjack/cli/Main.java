@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Terminal blackjack for one player: Tyler, in the middle seat with the house.
- * The table redraws in place every time. Bots can fill the other seats later.
+ * Terminal blackjack for Tyler, in the middle seat, with a random number of bots in the other seats.
+ * The table redraws in place every time.
  * No DB yet, so chips reset every time the program starts.
  */
 public class Main {
@@ -19,6 +19,7 @@ public class Main {
     private final Player tyler = new Player("Tyler");
     private final Table table = new Table(new Dealer("House"));
     private final TableScreen screen = new TableScreen();
+    private final Bots bots = new Bots();
 
     /* Shown under the table on the next draw, then cleared */
     private final List<String> messages = new ArrayList<>();
@@ -30,16 +31,25 @@ public class Main {
     /* Pause between cards, and a longer one when the dealer flips the hole card */
     private static final long CARD_DELAY_MS = 450;
     private static final long FLIP_DELAY_MS = 700;
+    /* How long a bot "thinks" before acting */
+    private static final long BOT_THINK_MS = 700;
 
     void main()
     {
         this.table.playerConnect(this.tyler, TYLER_SEAT);
+        this.bots.fill(this.table);
         this.messages.add("Blackjack pays " + this.tyler.getPayoutMultiplier() + ":1. Dealer hits soft 17. Type 'help' for commands.");
 
         while (true)
         {
+            for (Player bot : this.bots.removeBroke(this.table))
+            {
+                this.messages.add(bot.getName() + " is out of chips and leaves the table.");
+            }
+
             Round round = this.table.startRound();
             if (!betting(round)) break;
+            this.bots.placeBets(round);
 
             /* Read after betting, so a loan or repayment made at the prompt isn't counted as winnings */
             BigInteger chipsBefore = this.tyler.getNetworth().add(betOf(round));
@@ -48,21 +58,38 @@ public class Main {
 
             round.closeBetting();
             this.onScreen = null;
-            if (!round.hasBet(this.tyler))
-            {
-                this.messages.add("You sat that one out.");
-                continue;
-            }
 
             while (round.getPhase() == Round.Phase.PLAYER_TURNS)
             {
-                if (!playTurn(round)) return;
+                Player active = this.table.getSeatedPlayers().get(round.getView().activeSeat());
+                if (this.bots.isBot(active))
+                {
+                    botTurn(round, active);
+                }
+                else if (!playTurn(round))
+                {
+                    return;
+                }
+            }
+
+            this.messages.clear();
+            if (round.getView().seats().stream().noneMatch(seat -> seat.bet() != null))
+            {
+                this.messages.add("Nobody bet that round.");
+                continue;
             }
 
             this.lastRound = round.getView();
             show(this.lastRound);
             pause(FLIP_DELAY_MS);
-            addResults(chipsBefore, loanPaidBefore, inDebtBefore);
+            if (round.hasBet(this.tyler))
+            {
+                addResults(chipsBefore, loanPaidBefore, inDebtBefore);
+            }
+            else
+            {
+                this.messages.add("You sat that one out.");
+            }
         }
 
         this.messages.clear();
@@ -185,6 +212,23 @@ public class Main {
             round.apply(this.tyler, action);
             return true;
         }
+    }
+
+    private void botTurn(final Round round, final Player bot)
+    {
+        show(round.getView());
+        pause(BOT_THINK_MS);
+
+        Action action = this.bots.decide(round.getView(), bot, round);
+        this.messages.clear();
+        this.messages.add(bot.getName() + switch (action)
+        {
+            case HIT -> " hits.";
+            case STAND -> " stands.";
+            case DOUBLE -> " doubles down.";
+            case SPLIT -> " splits.";
+        });
+        round.apply(bot, action);
     }
 
     /* ---------- Messages ---------- */

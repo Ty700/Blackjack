@@ -17,9 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
  *  - Over 21 is a bust, and the hand is finished.
  *  - A hand may still hit on 21 (house rule), unless it is a blackjack.
  *  - Split: first two cards only, same value. A 10 only splits with a 10. J/Q/K split with each other.
- *  - Bets are positive multiples of 100.
+ *  - Bets are at least 100, in steps of 25.
  *  - Double: first two cards only, doubles the bet, takes exactly one card, then the hand is finished.
- *    A power-up may add a different (positive) amount instead of the original bet.
+ *    A power-up may add a different amount instead of the original bet (a positive multiple of 25).
+ *  - A hand with an ace still counted as 11 is soft.
  *  - A finished hand takes no more cards.
  */
 public class HandTest {
@@ -66,6 +67,20 @@ public class HandTest {
     void softTotals(String ranks, int total)
     {
         assertEquals(total, deal(ranks).getHandTotal());
+    }
+
+    @ParameterizedTest(name = "{0} soft={1}")
+    @CsvSource({
+            "ACE SIX,        true",
+            "ACE ACE,        true",
+            "ACE TWO FOUR,   true",
+            "ACE SIX TEN,    false",   // ace had to drop to 1
+            "TEN SEVEN,      false",
+            "TEN SIX ACE,    false",
+    })
+    void softness(String ranks, boolean soft)
+    {
+        assertEquals(soft, deal(ranks).isSoft());
     }
 
     /* ---------- Blackjack ---------- */
@@ -219,13 +234,13 @@ public class HandTest {
     void doubleWithCustomAmountAddsThatAmount()
     {
         Hand hand = deal("FIVE SIX");
-        hand.doubleHand(new Card(Rank.NINE, Suit.CLUB), BigInteger.valueOf(300));
-        assertEquals(BigInteger.valueOf(400), hand.getBetTotal());
+        hand.doubleHand(new Card(Rank.NINE, Suit.CLUB), BigInteger.valueOf(325));
+        assertEquals(BigInteger.valueOf(425), hand.getBetTotal());
         assertEquals(Hand.HandState.DONE, hand.getHandState());
     }
 
     @ParameterizedTest(name = "additional bet {0}")
-    @ValueSource(longs = {0, -100})
+    @ValueSource(longs = {0, -100, 30, 110})
     void doubleRejectsNonPositiveAmount(long amount)
     {
         Hand hand = deal("FIVE SIX");
@@ -238,15 +253,15 @@ public class HandTest {
     /* ---------- Bets ---------- */
 
     @ParameterizedTest(name = "bet {0}")
-    @ValueSource(longs = {100, 200, 500, 1_000_000})
-    void betMultipleOf100IsAccepted(long bet)
+    @ValueSource(longs = {100, 125, 150, 175, 200, 500, 1_000_000})
+    void betOfAtLeast100InStepsOf25IsAccepted(long bet)
     {
         assertEquals(BigInteger.valueOf(bet), new Hand(BigInteger.valueOf(bet)).getBetTotal());
     }
 
     @ParameterizedTest(name = "bet {0}")
-    @ValueSource(longs = {0, -100, 1, 50, 99, 150, 1_001})
-    void betNotPositiveMultipleOf100IsRejected(long bet)
+    @ValueSource(longs = {0, -100, 1, 25, 50, 75, 99, 110, 130, 1_001})
+    void betBelow100OrOffStepIsRejected(long bet)
     {
         assertThrows(IllegalArgumentException.class, () -> new Hand(BigInteger.valueOf(bet)));
     }

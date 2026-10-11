@@ -6,7 +6,7 @@ subprojects {
     apply plugin: 'java'
 
     group = 'tech.ty700'
-    version = '0.0.1'
+    version = '1.0.0'
 
     java {
         toolchain {

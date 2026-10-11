@@ -2,4 +2,4 @@
 # Builds the CLI quietly, then runs it directly so Gradle's progress bar isn't on screen while you play.
 cd "$(dirname "$0")" || exit 1
 GRADLE_OPTS="--enable-native-access=ALL-UNNAMED $GRADLE_OPTS" ./gradlew -q --console=plain :cli:installDist || exit 1
-exec cli/build/install/cli/bin/cli "$@"
+exec cli/build/install/blackjack-cli/bin/blackjack "$@"

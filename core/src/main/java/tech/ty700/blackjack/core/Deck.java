@@ -111,6 +111,9 @@ public class Deck {
         }
     }
 
+    /* Fresh shoe. The round calls this between hands when the shoe runs low */
+    public void reshuffle() { this.buildShoe(); }
+
     /* Draw mechanism */
     /* Why this way? I only wanted to write draw logic once... bite me */
     public Card[] drawCard() { return this.drawCards(1); }

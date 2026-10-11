@@ -1,17 +1,15 @@
 package tech.ty700.blackjack.core;
 
-public class Dealer extends Participant {
+import java.util.UUID;
+import java.math.BigInteger;
 
-
+public class Dealer extends Participant
+{
     Dealer()
     {
-        super("Dealer");
+        super("Dealer", UUID.randomUUID(), BigInteger.ZERO);
     }
 
-
-    public int hit()
-    {
-        /* Hit logic*/
-        return 0;
-    }
+    @Override
+    public void turn() {}
 }

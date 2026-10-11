@@ -1,10 +1,12 @@
 package tech.ty700.blackjack.core;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Hand
 {
+    private final static BigInteger BET_INCREMENT = BigInteger.valueOf(100);
     /* Reserver 6 cards per hand */
     private final List<Card> hand = new ArrayList<>(6);
 
@@ -13,7 +15,7 @@ public class Hand
 
     /* Members */
     private int         handTotal = 0;
-    private long        betToHand = 0;
+    private BigInteger  betToHand = BigInteger.ZERO;
     private HandState   handState = HandState.IDLE;
     private HandResult  handResults = HandResult.IN_PROGRESS;
 
@@ -22,11 +24,11 @@ public class Hand
     Hand() {}
 
     /* Players */
-    Hand(final long aBet )
+    Hand(final BigInteger aBet )
     {
-        if(aBet <= 0)
+        if(aBet.signum() <= 0 || aBet.mod(BET_INCREMENT).signum() != 0)
         {
-            throw new IllegalArgumentException("Bet must be positive");
+            throw new IllegalArgumentException("Bet must be positive multiple of: " + BET_INCREMENT);
         }
 
         this.betToHand = aBet;
@@ -44,7 +46,7 @@ public class Hand
 
     /* Getters */
     public HandResult getHandResult()   { return this.handResults;  }
-    public long getBetTotal()           { return this.betToHand;    }
+    public BigInteger getBetTotal()           { return this.betToHand;    }
     public int getHandTotal()           { return this.handTotal;    }
     public HandState getHandState()     { return this.handState;    }
     /* Returns a copy so caller can't bypass addCard */
@@ -97,15 +99,26 @@ public class Hand
         this.handState = HandState.DONE;
     }
 
-    public void doubleHand(final Card c, final long anAdditionalBet)
+    public void doubleHand(final Card c)
     {
-        if (this.hand.size() != 2 || this.handState != HandState.IN_PROGRESS) {
+        this.doubleHand(c, this.betToHand);
+    }
+
+    public void doubleHand(final Card c, final BigInteger anAdditionalBet)
+    {
+        if (this.hand.size() != 2 || this.handState != HandState.IN_PROGRESS)
+        {
             throw new IllegalStateException("Can only double on first two cards of an in-progress hand.");
+        }
+
+        if (anAdditionalBet.signum() <= 0)
+        {
+            throw new IllegalArgumentException("Additional bet must be positive");
         }
 
         /* Ownus is on the game to pass bet amount... */
         /* Most time this is just *2 of bet.. but perhaps there are power ups that allow for different amounts */
-        this.betToHand += anAdditionalBet;
+        this.betToHand = this.betToHand.add(anAdditionalBet);
         addCard(c);
         this.handState = HandState.DONE;
     }

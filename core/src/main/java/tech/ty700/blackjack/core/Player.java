@@ -6,10 +6,10 @@ public class Player extends Participant {
     public Player(String name)
     {
         super(name);
-    };
+    }
 
-    public int hit()
-    {
-        return 0;
+    @Override
+    public void turn() {
+
     }
 }

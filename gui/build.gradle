@@ -1,0 +1,24 @@
+/* gui: libgdx */
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation(project(':core'),
+    'com.badlogicgames.gdx:gdx:1.14.2',
+    'com.badlogicgames.gdx:gdx-backend-lwjgl3:1.14.2',
+    'com.badlogicgames.gdx:gdx-platform:1.14.2:natives-desktop')
+}
+
+application {
+    mainClass = 'tech.ty700.blackjack.gui.Main'
+    applicationName = 'blackjack-gui'
+    applicationDefaultJvmArgs = ['--enable-native-access=ALL-UNNAMED']
+}
+
+/* Release archives: blackjack-<version>.zip and .tar */
+distributions {
+    main {
+        distributionBaseName = 'blackjack-gui'
+    }
+}

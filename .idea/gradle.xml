@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/cli" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/gui" />
           </set>
         </option>
         <option name="myGradleHome" value="" />
